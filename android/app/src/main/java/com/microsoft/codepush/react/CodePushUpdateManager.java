@@ -1,7 +1,6 @@
 package com.microsoft.codepush.react;
 
 import android.os.Build;
-
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -19,9 +18,14 @@ import javax.net.ssl.HttpsURLConnection;
 public class CodePushUpdateManager {
 
     private String mDocumentsDirectory;
+    private static String mDeploymentKey = null;
 
     public CodePushUpdateManager(String documentsDirectory) {
         mDocumentsDirectory = documentsDirectory;
+    }
+
+    public static void setmDeploymentKey(String deploymentKey) {
+        mDeploymentKey = deploymentKey;
     }
 
     private String getDownloadFilePath() {
@@ -38,6 +42,9 @@ public class CodePushUpdateManager {
 
     private String getCodePushPath() {
         String codePushPath = CodePushUtils.appendPathComponent(getDocumentsDirectory(), CodePushConstants.CODE_PUSH_FOLDER_PREFIX);
+        if(this.mDeploymentKey != null) {
+            codePushPath = CodePushUtils.appendPathComponent(codePushPath, this.mDeploymentKey);
+        }
         if (CodePush.isUsingTestConfiguration()) {
             codePushPath = CodePushUtils.appendPathComponent(codePushPath, "TestPackages");
         }
